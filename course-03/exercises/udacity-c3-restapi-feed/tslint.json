@@ -80,8 +80,9 @@
       ],
       "prefer-const": true,
       "quotemark": [
-        true,
-        "single"
+        false,
+        "single",
+        "avoid-escape"
       ],
       "radix": true,
       "semicolon": [
@@ -136,4 +137,3 @@
       "directive-class-suffix": true
     }
   }
-  
