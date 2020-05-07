@@ -6,7 +6,7 @@
 	},
 	"item": [
 		{
-			"name": "Feed List",
+			"name": "Get Feed List",
 			"event": [
 				{
 					"listen": "test",
@@ -47,6 +47,96 @@
 						"api",
 						"v0",
 						"feed"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Feed Item",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{base_url}}/api/v0/feed/:id",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v0",
+						"feed",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "-1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Feed Item",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"caption\": \"test\",\n\t\"fileName\": \"test-file.jpeg\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/v0/feed",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v0",
+						"feed"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Feed Item",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{base_url}}/api/v0/feed/:id",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v0",
+						"feed",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "1"
+						}
 					]
 				}
 			},

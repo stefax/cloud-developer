@@ -41,7 +41,8 @@ For every folder that contains a `Dockerfile` run `docker build -t <image-name> 
 
 ### Feed REST API
 
-**Requirements**
+
+#### Requirements
 1. needs a postgresql database with the feed table, that is exclusive to this User REST API  
    - i created one database `udagram4feedms4dev` in AWS (db.t2.micro)  
    - for the chosen VPC security group i allowed PostgreSQL, TCP traffic from any source (inbound rules)
@@ -63,7 +64,9 @@ For every folder that contains a `Dockerfile` run `docker build -t <image-name> 
     </CORSRule>
     </CORSConfiguration>
     ```
-   
+
+#### Tests
+Check out the postman collection in the tests folder and see which API endpoints there are.
 
 
 ### Frontend

@@ -43,11 +43,18 @@ router.get('/', async (req: Request, res: Response) => {
 });
 
 // Get a specific resource
-router.get('/:id',
-    async (req: Request, res: Response) => {
-    const { id } = req.params;
-    const item = await FeedItem.findByPk(id);
-    res.send(item);
+router.get('/:id', async (req: Request, res: Response) => {
+  const { id } = req.params;
+  if (!id) {
+    return res.status(HttpStatus.NOT_FOUND).send("missing id");
+  }
+
+  const item = await FeedItem.findByPk(id);
+  if (!item) {
+    return res.status(HttpStatus.NOT_FOUND).send(`item for id '${id}' not found.`);
+  }
+
+  return res.status(HttpStatus.OK).send(item);
 });
 
 // update a specific resource
