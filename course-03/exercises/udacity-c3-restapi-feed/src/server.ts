@@ -1,9 +1,10 @@
 import express from 'express';
 import { sequelize } from './sequelize';
-import { IndexRouter } from './controllers/v0/index.router';
+import { V0IndexRouter } from './controllers/v0/index.router';
 import bodyParser from 'body-parser';
 import { config } from './config/config';
 import { V0MODELS } from './controllers/v0/model.index';
+import * as HttpStatus from 'http-status-codes';
 
 const c = config.server;
 
@@ -12,7 +13,7 @@ const c = config.server;
   await sequelize.sync();
 
   const app = express();
-  const port = c.port || 8080; // default port to listen
+  const port = c.port || c.default_port;
 
   app.use(bodyParser.json());
 
@@ -23,11 +24,11 @@ const c = config.server;
     next();
   });
 
-  app.use("/api/v0/", IndexRouter);
+  app.use(`/api/${config.version}/`, V0IndexRouter);
 
   // Root URI call
   app.get( "/", async ( req, res ) => {
-    res.status(200).send(`Use e.g. http://${c.url}:${c.port}/api/v0/feed`);
+    res.status(HttpStatus.OK).send(`Use e.g. http://${c.url}:${c.port}/api/${config.version}/feed`);
   } );
 
   // Start the Server

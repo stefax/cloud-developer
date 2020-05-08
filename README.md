@@ -41,6 +41,11 @@ For every folder that contains a `Dockerfile` run `docker build -t <image-name> 
 
 ### Feed REST API
 
+#### What it does
+- Provides access to the feeds.
+- You can currently list feed items or show one specific one without being logged in
+- You can create and edit a feed item when you're logged in (no ownership check implemented!)
+- For read and write access to the S3 bucket, we use [signed urls](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-signed-urls.html)
 
 #### Requirements
 1. needs a postgresql database with the feed table, that is exclusive to this User REST API  
