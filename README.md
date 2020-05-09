@@ -29,13 +29,17 @@ For every folder that contains a `package.json`, run `npm install` or `npm i` to
 For every folder that contains a `.env.example` file, copy it to a `.env` file and set environment variables there.
 
 ### 2.1.3 Creating docker images
-For every folder that contains a `Dockerfile` run `docker build -t <image-name> .` to build the docker image.
+For every folder that contains a `Dockerfile` run `docker build -t <image-name> .` to build the docker image from inside
+the folder.
 
 ## 2.2 User REST API
 
 ### 2.2.1 What it does
 - Allows registering users and logging in
 - For authentication and to keep the credentials locally we use [JWT](https://jwt.io/introduction/)
+  - **IMPORTANT NOTE**: the secret used for JWT signing and verification is shared between the User and the Feed REST API!
+- **Important Note on CORS**: To enable API access from any frontend, the `Access-Control-Allow-Origin` is currently set to `*`. 
+It would be better to restrict that.
 
 ### 2.2.2 Requirements
 1. needs a postgresql database with the user table, that should be exclusive to this User REST API
@@ -53,6 +57,8 @@ For every folder that contains a `Dockerfile` run `docker build -t <image-name> 
 - You can currently list feed items or show one specific one without being logged in
 - You can create and edit a feed item when you're logged in (no ownership check implemented!)
 - For read and write access to the S3 bucket, we use [signed urls](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-signed-urls.html)
+- **Important Note on CORS**: To enable API access from any frontend, the `Access-Control-Allow-Origin` is currently set to `*`. 
+It would be better to restrict that.
 
 ### 2.3.2 Requirements
 1. needs a postgresql database with the feed table, that is exclusive to this Feed REST API  
@@ -84,11 +90,21 @@ For every folder that contains a `Dockerfile` run `docker build -t <image-name> 
 
 ## 2.4 Frontend
 
-xxxxxxxxxxxxxxx
+The frontend is based on angular/ionic and uses the two APIs (2.2 and 2.3) in order to create the Udagram app.
 
-## 2.5 Deployment
+## 2.5 Reverse Proxy
 
-xxxxxxxxxxx
+This is a simple reverse proxy setup based on nginx in order to have one single API Gateway, which gives access to 
+other APIs behind it. There we could implement the authentication. This is a TODO for later.
+
+## 2.6 Deployment
+
+### 2.6.1 Running it locally with docker-compose
+
+- Create a .env file from the .env.example and set the environment variables 
+- Build the images: `docker-compose -f docker-compose-build.yaml build`
+- Run the container: `docker-compose up`
+- Call the [frontend app](http://localhost:8100/home)
 
 
 # 3 Branches
