@@ -1,0 +1,535 @@
+{
+	"info": {
+		"_postman_id": "f522cf5b-0f59-4305-9761-9102e023f087",
+		"name": "REST API User",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Register New User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b2b3eeab-2564-4d56-a405-f5fb36f54fc3",
+						"exec": [
+							"pm.response.to.have.status(201);",
+							"pm.test(\"Returned a valid (at least not empty) jwt token\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.token.length > 0).to.be.true;",
+							"    // update collection variable \"jwt\" with returned token",
+							"    pm.collectionVariables.set(\"jwt\", pm.response.json().token);",
+							"});",
+							"",
+							"console.log(\"Delete the user again\")",
+							"const options = {",
+							"    method: 'DELETE',",
+							"    url: pm.environment.get(\"base_url\") + '/api/v0/users/' + pm.collectionVariables.get(\"email\"),",
+							"    header: \"Authorization:Bearer \" + pm.collectionVariables.get(\"jwt\")",
+							"};",
+							"",
+							"pm.sendRequest(options, (error, response) => {",
+							"    if (error) throw new Error(error);",
+							"    console.log(response);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "4f7ebb86-c064-4198-b709-4c7576c8e91b",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\": \"{{email}}\",\n\t\"password\": \"{{password}}\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/v0/users/auth",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v0",
+						"users",
+						"auth"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b2b3eeab-2564-4d56-a405-f5fb36f54fc3",
+						"exec": [
+							"pm.response.to.have.status(204);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "82dd460c-1147-4528-b085-737e4694aec4",
+						"exec": [
+							"// create the user in order to delete afterwards",
+							"const payload = {",
+							"    email: pm.collectionVariables.get(\"email\"),",
+							"    password: pm.collectionVariables.get(\"password\")",
+							"};",
+							"",
+							"const options = {",
+							"    method: 'POST',",
+							"    url: pm.environment.get(\"base_url\") + '/api/v0/users/auth',",
+							"    header: 'Content-Type: application/json',",
+							"    body: {",
+							"        mode: 'json',",
+							"        raw: payload",
+							"    }",
+							"};",
+							"",
+							"pm.sendRequest(options, (error, response) => {",
+							"    if (error) throw new Error(error);",
+							"    console.log(response.json());",
+							"    pm.collectionVariables.set(\"jwt\", response.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/v0/users/{{email}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v0",
+						"users",
+						"{{email}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "db06d1e7-fd5b-4053-aa1f-09a27a5f2890",
+						"exec": [
+							"// create the user in order to delete afterwards",
+							"const payload = {",
+							"    email: pm.collectionVariables.get(\"email\"),",
+							"    password: pm.collectionVariables.get(\"password\")",
+							"};",
+							"",
+							"const options = {",
+							"    method: 'POST',",
+							"    url: pm.environment.get(\"base_url\") + '/api/v0/users/auth',",
+							"    header: 'Content-Type: application/json',",
+							"    body: {",
+							"        mode: 'json',",
+							"        raw: payload",
+							"    }",
+							"};",
+							"",
+							"pm.sendRequest(options, (error, response) => {",
+							"    if (error) throw new Error(error);",
+							"    console.log(response.json());",
+							"    pm.collectionVariables.set(\"jwt\", response.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "e7f593e9-6814-4988-9aac-96bab7159d44",
+						"exec": [
+							"pm.response.to.have.status(200);",
+							"pm.test(\"Returned a valid user object\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.email).to.eql(pm.collectionVariables.get(\"email\"));",
+							"});",
+							"",
+							"console.log(\"Delete the user again\")",
+							"const options = {",
+							"    method: 'DELETE',",
+							"    url: pm.environment.get(\"base_url\") + '/api/v0/users/' + pm.collectionVariables.get(\"email\"),",
+							"    header: \"Authorization:Bearer \" + pm.collectionVariables.get(\"jwt\")",
+							"};",
+							"",
+							"pm.sendRequest(options, (error, response) => {",
+							"    if (error) throw new Error(error);",
+							"    console.log(response);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAZXhhbXBsZS5jb20iLCJpYXQiOjE1ODkwNTA2ODF9.JZ0joILkv9jVu0WcysIpPMjgd7pIkFoyVv_onWEjVPU",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/v0/users/{{email}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v0",
+						"users",
+						"{{email}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0fb9f70a-5bb8-49ef-a4af-35ebf93d24fb",
+						"exec": [
+							"pm.response.to.have.status(200);",
+							"pm.test(\"Succesful login with jwt token in response\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.token.length > 0).to.be.true;",
+							"});",
+							"pm.collectionVariables.set(\"jwt\", pm.response.json().token);",
+							"",
+							"console.log(\"Delete the user again\")",
+							"const options = {",
+							"    method: 'DELETE',",
+							"    url: pm.environment.get(\"base_url\") + '/api/v0/users/' + pm.collectionVariables.get(\"email\"),",
+							"    header: \"Authorization:Bearer \" + pm.collectionVariables.get(\"jwt\")",
+							"};",
+							"",
+							"pm.sendRequest(options, (error, response) => {",
+							"    if (error) throw new Error(error);",
+							"    console.log(response);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c8a88994-9dc8-4c03-a2fe-af09de6a5ca2",
+						"exec": [
+							"// create the user in order to login afterwards",
+							"const payload = {",
+							"    email: pm.collectionVariables.get(\"email\"),",
+							"    password: pm.collectionVariables.get(\"password\")",
+							"};",
+							"",
+							"const options = {",
+							"    method: 'POST',",
+							"    url: pm.environment.get(\"base_url\") + '/api/v0/users/auth',",
+							"    header: \"Content-Type: application/json\",",
+							"    body: {",
+							"        mode: 'json',",
+							"        raw: payload",
+							"    }",
+							"};",
+							"",
+							"pm.sendRequest(options, (error, response) => {",
+							"    if (error) throw new Error(error);",
+							"    console.log(response.json());",
+							"    pm.collectionVariables.set(\"jwt\", response.json().jwt);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\": \"{{email}}\",\n\t\"password\": \"{{password}}\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/v0/users/auth/login",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v0",
+						"users",
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Verify User - Unverified",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c459a412-531a-4097-b221-fffc8e820843",
+						"exec": [
+							"pm.response.to.have.status(401);",
+							"pm.test(\"Has error message\", function () {",
+							"    pm.expect(pm.response.json().message.length > 0).to.be.true;",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "14e58113-22ab-4682-80a9-ce247d551fc2",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/v0/users/auth/verification",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v0",
+						"users",
+						"auth",
+						"verification"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Verify User - Verified",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "994c83d9-a6f5-420a-b1bb-f4c981ceaeb9",
+						"exec": [
+							"pm.response.to.have.status(200);",
+							"pm.test(\"Get authenticated message\", function () {",
+							"    pm.expect(pm.response.json().message === 'Authenticated.').to.be.true;",
+							"});",
+							"",
+							"console.log(\"Delete the user again\")",
+							"const options = {",
+							"    method: 'DELETE',",
+							"    url: pm.environment.get(\"base_url\") + '/api/v0/users/' + pm.collectionVariables.get(\"email\"),",
+							"    header: \"Authorization:Bearer \" + pm.collectionVariables.get(\"jwt\")",
+							"};",
+							"",
+							"pm.sendRequest(options, (error, response) => {",
+							"    if (error) throw new Error(error);",
+							"    console.log(response);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "1e1eba0c-808d-473e-a7b7-03bc65aab9da",
+						"exec": [
+							"// create the user in order to verify afterwards",
+							"const payload = {",
+							"    email: pm.collectionVariables.get(\"email\"),",
+							"    password: pm.collectionVariables.get(\"password\")",
+							"};",
+							"",
+							"const options = {",
+							"    method: 'POST',",
+							"    url: pm.environment.get(\"base_url\") + '/api/v0/users/auth',",
+							"    header: 'Content-Type: application/json',",
+							"    body: {",
+							"        mode: 'json',",
+							"        raw: payload",
+							"    }",
+							"};",
+							"",
+							"pm.sendRequest(options, (error, response) => {",
+							"    if (error) throw new Error(error);",
+							"    console.log(response.json());",
+							"    pm.collectionVariables.set(\"jwt\", response.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/v0/users/auth/verification",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v0",
+						"users",
+						"auth",
+						"verification"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{jwt}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "44d932cc-72bd-4b66-9511-23ec4acad568",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "1cc7fa25-e727-4c9a-b0de-c6fc9061a744",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "4b83c3f7-8bb6-46fe-9073-0098053bfa87",
+			"key": "email",
+			"value": "test@example.com",
+			"type": "string"
+		},
+		{
+			"id": "61999f14-a853-4946-b4f9-9f8a31724ffd",
+			"key": "password",
+			"value": "abc123",
+			"type": "string"
+		},
+		{
+			"id": "fe49ddc4-5106-46cb-b4b1-358e66e1098f",
+			"key": "jwt",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAZXhhbXBsZS5jb20iLCJpYXQiOjE1ODkwNjA2NjB9.1VKJ3VV2wWcsosna96-SKoZ8QRpwgz5slbt3zzyZRg4",
+			"type": "string"
+		}
+	],
+	"protocolProfileBehavior": {}
+}

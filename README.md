@@ -1,6 +1,6 @@
 ##### The Udagram Project
 
-# ToDos
+# 1 ToDos
 
 - Screenshot of TravisCI which shows the successful build and deploy steps
 - The public GitHub repo and the docker hub images
@@ -9,7 +9,7 @@
 - [Also see the Project Rubric](https://review.udacity.com/#!/rubrics/2572/view)
 
 
-# Setup
+# 2 Setup
 
 The project has four folders: 
 - **restapi-user:** is the rest api to authenticate the user
@@ -17,38 +17,45 @@ The project has four folders:
 - **frontend:** is the simple angular/ionic based frontend into the photo app
 - **deployment:** takes care of the deployment to kubernetes
 
-Each of these folders is completely independent from the rest. It can be extracted out of the project and taken to 
-another completely new git repository and still works the same.
+Each of these folders is completely independent from the rest. It can be extracted out of the project, taken to 
+another git repository, run in a different environment and still works the same (given it's configured correctly).
 
-## General
+## 2.1 General
 
-### Install dependencies
-For every folder that contains a `package.json` run `npm install` or `npm i` to have all required dependencies.
+### 2.1.1 Install dependencies
+For every folder that contains a `package.json`, run `npm install` or `npm i` to have all required dependencies.
 
-### Set environment variables
+### 2.1.2 Set environment variables
 For every folder that contains a `.env.example` file, copy it to a `.env` file and set environment variables there.
 
-### Creating docker images
+### 2.1.3 Creating docker images
 For every folder that contains a `Dockerfile` run `docker build -t <image-name> .` to build the docker image.
 
-## The four projects
+## 2.2 User REST API
 
-### User REST API
+### 2.2.1 What it does
+- Allows registering users and logging in
+- For authentication and to keep the credentials locally we use [JWT](https://jwt.io/introduction/)
 
-- needs a database with the user table
-- uses a postgresql db, that is exclusive to this User REST API
-- you need 2 dbs set up on AWS for this: one for dev/test/staging and one for production 
+### 2.2.2 Requirements
+1. needs a postgresql database with the user table, that should be exclusive to this User REST API
+   - for AWS cost reasons, i used the database `udagram4feedms4dev` in AWS (db.t2.micro) that we also use for feeds  
+   - for the chosen VPC security group i allowed PostgreSQL, TCP traffic from any source (inbound rules)
 
-### Feed REST API
+### 2.2.3 Running it & tests
+- Use `npm run dev` to run the project in your dev environment.
+- Check out the postman collection in the tests folder and see which API endpoints there are.
 
-#### What it does
+## 2.3 Feed REST API
+
+### 2.3.1 What it does
 - Provides access to the feeds.
 - You can currently list feed items or show one specific one without being logged in
 - You can create and edit a feed item when you're logged in (no ownership check implemented!)
 - For read and write access to the S3 bucket, we use [signed urls](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-signed-urls.html)
 
-#### Requirements
-1. needs a postgresql database with the feed table, that is exclusive to this User REST API  
+### 2.3.2 Requirements
+1. needs a postgresql database with the feed table, that is exclusive to this Feed REST API  
    - i created one database `udagram4feedms4dev` in AWS (db.t2.micro)  
    - for the chosen VPC security group i allowed PostgreSQL, TCP traffic from any source (inbound rules)
 2. needs an S3 bucket for the images 
@@ -70,24 +77,21 @@ For every folder that contains a `Dockerfile` run `docker build -t <image-name> 
     </CORSConfiguration>
     ```
 
-#### Tests
-Check out the postman collection in the tests folder and see which API endpoints there are.
+### 2.3.3 Running it & tests
+- Use `npm run dev` to run the project in your dev environment.
+- Check out the postman collection in the tests folder and see which API endpoints there are.
 
 
-### Frontend
+## 2.4 Frontend
 
-asdfasdfsa asf 
+xxxxxxxxxxxxxxx
 
-### Deployment
+## 2.5 Deployment
 
-asdfasdfsa asf 
-
-
-## 
+xxxxxxxxxxx
 
 
-
-# Branches
+# 3 Branches
 
 For this project, we are using the following branching conventions:
 

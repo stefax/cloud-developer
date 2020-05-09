@@ -2,7 +2,7 @@ import { Router, Request, Response } from 'express';
 import { FeedItem } from '../models/FeedItem';
 import { NextFunction } from 'connect';
 import * as jwt from 'jsonwebtoken';
-import * as AWS from '../../../../aws';
+import * as AWS from '../../../../util/aws';
 import { config } from '../../../../config/config';
 import * as HttpStatus from 'http-status-codes';
 
