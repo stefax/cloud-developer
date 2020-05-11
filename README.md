@@ -1,17 +1,22 @@
 ##### The Udagram Project
 
-As described in the Project Instructions, this is based on the [Starter Repo](https://github.com/scheeles/cloud-developer/tree/06-ci/course-03/exercises).
+As described in the Project Instructions of Lesson 4 (Monolith to Microservices), this is based on the [Starter Repo](https://github.com/scheeles/cloud-developer/tree/06-ci/course-03/exercises).
 
-Side Note: I first worked on a [fork of the above repository](https://github.com/stefax/cloud-developer) before I created a clean repository for the project.
+The only relevant folder for this project is the folder `course-03/exercises`.
 
 
 # 1 ToDos
 
-- Screenshot of TravisCI which shows the successful build and deploy steps
-- The public GitHub repo and the docker hub images
-- Screenshot of kubectl get pod which shows all running containers
-- Screenshot of the application
-- [Also see the Project Rubric](https://review.udacity.com/#!/rubrics/2572/view)
+## What to submit
+- [ ] Screenshot of TravisCI which shows the successful build and deploy steps
+- [ ] The public GitHub repo and the docker hub images
+- [ ] Screenshot of kubectl get pod which shows all running containers
+- [ ] Screenshot of the application
+
+## Rubric requirements
+
+[See Project Rubric here](https://review.udacity.com/#!/rubrics/2572/view).
+
 - [ ] CI/CD, Github & Code Quality
   - [ ] The project demonstrates an understanding of CI and Github: All project code is stored in a GitHub repository and a link to the repository has been provided for reviewers. The student uses a CI/CD tool to build the application.
   - [ ] The project has a proper documentation - The README file includes introduction how to setup and deploy the project. It explains the main building blocks and has comments in the important files.
@@ -123,7 +128,18 @@ other APIs behind it. There we could implement the authentication. This is a TOD
 - Run the container: `docker-compose up`
 - Call the [frontend app](http://localhost:8100/home)
 
-### 2.6.2 Deployment to Production with Kubernetes
+### 2.6.2 Pushing the images to the Docker Regsitry
+
+- Run `docker login` to have your Docker Registry (e.g. Docker Hub) configured in case you haven't done it yet
+- Run `docker-compose -f docker-compose-build.yaml push`
+
+### 2.6.3 CI using Travis CI
+
+- Travis CI is triggered to build the project (actually to build the 4 above mentioned images) if you are on master
+  (e.g. when a pull request is merged).
+- See `.travis.yml` in the root folder for configuration details
+
+### 2.6.4 Deployment to Production with Kubernetes
 
 TODO
 
