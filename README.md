@@ -1,5 +1,10 @@
 ##### The Udagram Project
 
+As described in the Project Instructions, this is based on the [Starter Repo](https://github.com/scheeles/cloud-developer/tree/06-ci/course-03/exercises).
+
+Side Note: I first worked on a [fork of the above repository](https://github.com/stefax/cloud-developer) before I created a clean repository for the project.
+
+
 # 1 ToDos
 
 - Screenshot of TravisCI which shows the successful build and deploy steps
@@ -7,6 +12,18 @@
 - Screenshot of kubectl get pod which shows all running containers
 - Screenshot of the application
 - [Also see the Project Rubric](https://review.udacity.com/#!/rubrics/2572/view)
+- [ ] CI/CD, Github & Code Quality
+  - [ ] The project demonstrates an understanding of CI and Github: All project code is stored in a GitHub repository and a link to the repository has been provided for reviewers. The student uses a CI/CD tool to build the application.
+  - [ ] The project has a proper documentation - The README file includes introduction how to setup and deploy the project. It explains the main building blocks and has comments in the important files.
+  - [ ] The project use continuous deployments (CD) - A CI/CD tool is in place to deploy a new version of the app automatically to production. The description should be easy to follow.
+- [ ] Container
+  - [ ] The app is containerized: There is a Dockerfile in repo and the docker image can be build
+  - [ ] The project have public docker images: On DockerHub images for the application are available
+  - [ ] The applications runs in a container without errors: Starting the app as a container on a local system
+- [ ] Deployment
+  - [ ] The application runs on a cluster in the cloud: The project can be deployed to a kubernetes cluster
+  - [ ] The app can be upgraded via rolling-update: The students can deploy a new version of the application without downtime
+  - [ ] A/B deployment of the application: Two versions - 'A' and 'B' of the same application can run simultaneously and serve the traffic
 
 
 # 2 Setup
@@ -106,6 +123,9 @@ other APIs behind it. There we could implement the authentication. This is a TOD
 - Run the container: `docker-compose up`
 - Call the [frontend app](http://localhost:8100/home)
 
+### 2.6.2 Deployment to Production with Kubernetes
+
+TODO
 
 # 3 Branches
 
