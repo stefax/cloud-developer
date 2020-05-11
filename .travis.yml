@@ -1,6 +1,6 @@
 branches:
   only:
-    - master
+    - nonexistingmaster # todo set back to master
 
 language: minimal
 

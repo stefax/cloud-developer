@@ -1,53 +1,190 @@
-# Udagram Image Filtering Microservice
+##### The Udagram Project
 
 Udagram is a simple cloud application developed alongside the Udacity Cloud Engineering Nanodegree. It allows users to register and log into a web client, post photos to the feed, and process photos using an image filtering microservice.
 
-The project is split into three parts:
-1. [The Simple Frontend](/udacity-c3-frontend)
-A basic Ionic client web application which consumes the RestAPI Backend. 
-2. [The RestAPI Feed Backend](/udacity-c3-restapi-feed), a Node-Express feed microservice.
-3. [The RestAPI User Backend](/udacity-c3-restapi-user), a Node-Express user microservice.
+As described in the Project Instructions of Lesson 4 (Monolith to Microservices), this is based on the [Starter Repo](https://github.com/scheeles/cloud-developer/tree/06-ci/course-03/exercises).
 
-## Getting Setup
-
-> _tip_: this frontend is designed to work with the RestAPI backends). It is recommended you stand up the backend first, test using Postman, and then the frontend should integrate.
-
-### Installing Node and NPM
-This project depends on Nodejs and Node Package Manager (NPM). Before continuing, you must download and install Node (NPM is included) from [https://nodejs.com/en/download](https://nodejs.org/en/download/).
-
-### Installing Ionic Cli
-The Ionic Command Line Interface is required to serve and build the frontend. Instructions for installing the CLI can be found in the [Ionic Framework Docs](https://ionicframework.com/docs/installation/cli).
-
-### Installing project dependencies
-
-This project uses NPM to manage software dependencies. NPM Relies on the package.json file located in the root of this repository. After cloning, open your terminal and run:
-```bash
-npm install
-```
->_tip_: **npm i** is shorthand for **npm install**
-
-### Setup Backend Node Environment
-You'll need to create a new node server. Open a new terminal within the project directory and run:
-1. Initialize a new project: `npm init`
-2. Install express: `npm i express --save`
-3. Install typescript dependencies: `npm i ts-node-dev tslint typescript  @types/bluebird @types/express @types/node --save-dev`
-4. Look at the `package.json` file from the RestAPI repo and copy the `scripts` block into the auto-generated `package.json` in this project. This will allow you to use shorthand commands like `npm run dev`
+The only relevant folder for this project is the folder `course-03/exercises`.
 
 
-### Configure The Backend Endpoint
-Ionic uses enviornment files located in `./src/enviornments/enviornment.*.ts` to load configuration variables at runtime. By default `environment.ts` is used for development and `enviornment.prod.ts` is used for produciton. The `apiHost` variable should be set to your server url either locally or in the cloud.
+# 1 Project ToDos
 
-***
-### Running the Development Server
+## What to submit
+- [x] Screenshot of TravisCI which shows the successful build and deploy steps  
+    - see folder [project-submission-attachments](./project-submission-attachments)
+- [x] The public GitHub repo and the docker hub images  
+    - see [my GitHub repo](https://github.com/stefax/cloud-developer/tree/master/course-03/exercises)   
+    - see my [User REST API microservice image on dockerhub](https://hub.docker.com/repository/docker/modul1/udacity-restapi-user)
+    - see my [Feed REST API microservice image on dockerhub](https://hub.docker.com/repository/docker/modul1/udacity-restapi-feed)
+    - see my [Frontend image on dockerhub](https://hub.docker.com/repository/docker/modul1/udacity-frontend)
+    - see my [Reverse-Proxy image on dockerhub](https://hub.docker.com/repository/docker/modul1/reverseproxy)
+- [ ] Screenshot of kubectl get pod which shows all running containers
+- [ ] Screenshot of the application
+
+## Rubric requirements
+
+[See Project Rubric here](https://review.udacity.com/#!/rubrics/2572/view).
+
+- [ ] CI/CD, Github & Code Quality
+  - [ ] The project demonstrates an understanding of CI and Github: All project code is stored in a GitHub repository and a link to the repository has been provided for reviewers. The student uses a CI/CD tool to build the application.
+  - [ ] The project has a proper documentation - The README file includes introduction how to setup and deploy the project. It explains the main building blocks and has comments in the important files.
+  - [ ] The project use continuous deployments (CD) - A CI/CD tool is in place to deploy a new version of the app automatically to production. The description should be easy to follow.
+- [ ] Container
+  - [ ] The app is containerized: There is a Dockerfile in repo and the docker image can be build
+  - [ ] The project have public docker images: On DockerHub images for the application are available
+  - [ ] The applications runs in a container without errors: Starting the app as a container on a local system
+- [ ] Deployment
+  - [ ] The application runs on a cluster in the cloud: The project can be deployed to a kubernetes cluster
+  - [ ] The app can be upgraded via rolling-update: The students can deploy a new version of the application without downtime
+  - [ ] A/B deployment of the application: Two versions - 'A' and 'B' of the same application can run simultaneously and serve the traffic
+
+
+# 2 Setup
+
+The project has four folders: 
+- **restapi-user:** is the rest api to authenticate the user
+- **restapi-feed:** is the rest api to interact with the photo feed
+- **frontend:** is the simple angular/ionic based frontend into the photo app
+- **deployment:** takes care of the deployment to kubernetes
+
+Each of these folders is completely independent from the rest. It can be extracted out of the project, taken to 
+another git repository, run in a different environment and still works the same (given it's configured correctly).
+
+## 2.1 General
+
+### 2.1.1 Install node & docker
+
+- This project depends on Nodejs and Node Package Manager (NPM), download it here [https://nodejs.com/en/download](https://nodejs.org/en/download/).
+- This project requires [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/).
+- The Ionic Command Line Interface is required to serve and build the frontend. Instructions for installing the CLI can be found in the [Ionic Framework Docs](https://ionicframework.com/docs/installation/cli).
+
+### 2.1.2 Install dependencies
+For every folder that contains a `package.json`, run `npm install` or `npm i` to have all required dependencies.
+
+### 2.1.3 Set environment variables
+For every folder that contains a `.env.example` file, copy it to a `.env` file and set environment variables there.
+
+### 2.1.4 Creating docker images
+For every folder that contains a `Dockerfile` run `docker build -t <image-name> .` to build the docker image from inside
+the folder.
+
+## 2.2 User REST API
+
+### 2.2.1 What it does
+- Allows registering users and logging in
+- For authentication and to keep the credentials locally we use [JWT](https://jwt.io/introduction/)
+  - **IMPORTANT NOTE**: the secret used for JWT signing and verification is shared between the User and the Feed REST API!
+- **Important Note on CORS**: To enable API access from any frontend, the `Access-Control-Allow-Origin` is currently set to `*`. 
+It would be better to restrict that.
+
+### 2.2.2 Requirements
+1. needs a postgresql database with the user table, that should be exclusive to this User REST API
+   - for AWS cost reasons, i used the database `udagram4feedms4dev` in AWS (db.t2.micro) that we also use for feeds  
+   - for the chosen VPC security group i allowed PostgreSQL, TCP traffic from any source (inbound rules)
+
+### 2.2.3 Running it & tests
+- Use `npm run dev` to run the project in your dev environment.
+- Check out the postman collection in the tests folder and see which API endpoints there are.
+
+## 2.3 Feed REST API
+
+### 2.3.1 What it does
+- Provides access to the feeds.
+- You can currently list feed items or show one specific one without being logged in
+- You can create and edit a feed item when you're logged in (no ownership check implemented!)
+- For read and write access to the S3 bucket, we use [signed urls](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-signed-urls.html)
+- **Important Note on CORS**: To enable API access from any frontend, the `Access-Control-Allow-Origin` is currently set to `*`. 
+It would be better to restrict that.
+
+### 2.3.2 Requirements
+1. needs a postgresql database with the feed table, that is exclusive to this Feed REST API  
+   - i created one database `udagram4feedms4dev` in AWS (db.t2.micro)  
+   - for the chosen VPC security group i allowed PostgreSQL, TCP traffic from any source (inbound rules)
+2. needs an S3 bucket for the images 
+    - i created one `udagram-<account-id>-dev`
+    - i activated default encryption AES-256
+    - i added the following to the cors configuration
+    ```
+   <?xml version="1.0" encoding="UTF-8"?>
+    <CORSConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/">
+    <CORSRule>
+        <AllowedOrigin>*</AllowedOrigin>
+        <AllowedMethod>POST</AllowedMethod>
+        <AllowedMethod>GET</AllowedMethod>
+        <AllowedMethod>PUT</AllowedMethod>
+        <AllowedMethod>DELETE</AllowedMethod>
+        <AllowedMethod>HEAD</AllowedMethod>
+        <AllowedHeader>*</AllowedHeader>
+    </CORSRule>
+    </CORSConfiguration>
+    ```
+
+### 2.3.3 Running it & tests
+- Use `npm run dev` to run the project in your dev environment.
+- Check out the postman collection in the tests folder and see which API endpoints there are.
+
+
+## 2.4 Frontend
+
+The frontend is based on angular/ionic and uses the two APIs (2.2 and 2.3) in order to create the Udagram app. So, they need to be running first (best test them with the respective Postman test collections).
+
+### 2.4.1 Different environments
+Ionic uses environment files located in `./src/environments/environment.*.ts` to load configuration variables at runtime. By default `environment.ts` is used for development and `environment.prod.ts` is used for production. The `apiHost` variable should be set to your server url either locally or in the cloud.
+
+### 2.4.2 Running the Development Server
 Ionic CLI provides an easy to use development server to run and autoreload the frontend. This allows you to make quick changes and see them in real time in your browser. To run the development server, open terminal and run:
 
 ```bash
 ionic serve
 ```
 
-### Building the Static Frontend Files
+### 2.4.3 Building the Static Frontend Files
 Ionic CLI can build the frontend into static HTML/CSS/JavaScript files. These files can be uploaded to a host to be consumed by users on the web. Build artifacts are located in `./www`. To build from source, open terminal and run:
 ```bash
 ionic build
 ```
-***
+
+## 2.5 Reverse Proxy
+
+This is a simple reverse proxy setup based on nginx in order to have one single API Gateway, which gives access to 
+other APIs behind it. There we could implement the authentication. This is a TODO for later.
+
+## 2.6 Deployment
+
+### 2.6.1 Running it locally with docker-compose
+
+- Create a .env file from the .env.example and set the environment variables 
+- Build the images: `docker-compose -f docker-compose-build.yaml build`
+- Run the container: `docker-compose up`
+- Call the [frontend app](http://localhost:8100/home)
+
+### 2.6.2 Pushing the images to the Docker Regsitry
+
+- Run `docker login` to have your Docker Registry (e.g. Docker Hub) configured in case you haven't done it yet
+- Run `docker-compose -f docker-compose-build.yaml push`
+
+### 2.6.3 CI using Travis CI
+
+- Travis CI is triggered to build the project (actually to build the 4 above mentioned images) if you are on master
+  (e.g. when a pull request is merged).
+- See `.travis.yml` in the root folder for configuration details
+
+### 2.6.4 Deployment to Production with Kubernetes
+
+TODO
+
+# 3 Branches
+
+For this project, we are using the following branching conventions:
+
+- **dev** is the development branch. To work on anything, even better create your own branch named `<type>/<name>` where `<type>` is one of these:
+    - `feature` for any feature work
+    - `fix` for any bug fix
+    - `junk` for any throwaway branch to experiment with  
+  
+  and `<name>` is the actual name, e.g.: `feature/add-logout`
+  
+- **staging** is our testing branch. The staging environment is accessible for QA and the other teams, so that they can
+review and (manually) test our changes there if necessary. 
+
+- **master** is our production branch. What goes in there needs to be production ready. The branch is protected, so it is not possible to commit directly against this branch. Use pull requests (PRs) from staging instead.
