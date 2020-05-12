@@ -1,1 +1,5 @@
 **/.env
+kubeone-terraform/.terraform
+kubeone-terraform/udagram-kubeconfig
+kubeone-terraform/udagram.tar.gz
+kubeone-terraform/terraform.tfstate*
