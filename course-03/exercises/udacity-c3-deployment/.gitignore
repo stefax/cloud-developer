@@ -3,3 +3,6 @@ kubeone-terraform/.terraform
 kubeone-terraform/udagram-kubeconfig
 kubeone-terraform/udagram.tar.gz
 kubeone-terraform/terraform.tfstate*
+k8s/aws-secret.yaml
+k8s/env-configmap.yaml
+k8s/env-secret.yaml
