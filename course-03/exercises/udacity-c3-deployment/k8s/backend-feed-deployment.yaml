@@ -3,31 +3,36 @@ kind: Deployment
 metadata:
   labels:
     service: backend-feed
+    version: v0
   name: backend-feed
 spec:
-  replicas: 3
+  replicas: 2
+  selector:
+    matchLabels:
+      env: prod
   template:
     metadata:
       labels:
         service: backend-feed
+        version: v0
     spec:
       containers:
-      - image: scheele/udacity-restapi-feed
+      - image: modul1/udacity-restapi-feed
         name: backend-feed
-        imagePullPolicy: Always  
+        imagePullPolicy: Always
         resources:
           requests:
             memory: "64Mi"
             cpu: "250m"
           limits:
             memory: "1024Mi"
-            cpu: "500m"                  
+            cpu: "500m"
         env:
-        - name: URL
+        - name: FEED_MS_PORT
           valueFrom:
             configMapKeyRef:
               name: env-config
-              key: URL
+              key: FEED_MS_PORT
         - name: AWS_BUCKET
           valueFrom:
             configMapKeyRef:
@@ -48,32 +53,32 @@ spec:
             configMapKeyRef:
               name: env-config
               key: JWT_SECRET
-        - name: POSTGRESS_DB
+        - name: FEED_MS_POSTGRESS_DB
           valueFrom:
             configMapKeyRef:
               name: env-config
-              key: POSTGRESS_DB
-        - name: POSTGRESS_HOST
+              key: FEED_MS_POSTGRESS_DB
+        - name: FEED_MS_POSTGRESS_HOST
           valueFrom:
             configMapKeyRef:
               name: env-config
-              key: POSTGRESS_HOST
-        - name: POSTGRESS_PASSWORD
+              key: FEED_MS_POSTGRESS_HOST
+        - name: FEED_MS_POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
               name: env-secret
-              key: POSTGRESS_PASSWORD
-        - name: POSTGRESS_USERNAME
+              key: FEED_MS_POSTGRES_PASSWORD
+        - name: FEED_MS_POSTGRES_USERNAME
           valueFrom:
             secretKeyRef:
               name: env-secret
-              key: POSTGRESS_USERNAME      
+              key: FEED_MS_POSTGRES_USERNAME
         volumeMounts:
         - name: aws-secret
           mountPath: "/root/.aws/"
-          readOnly: true        
+          readOnly: true
       restartPolicy: Always
       volumes:
       - name: aws-secret
         secret:
-          secretName: aws-secret       
+          secretName: aws-secret

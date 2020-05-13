@@ -28,12 +28,12 @@ const c = config.server;
 
   // Root URI call
   app.get( "/", async ( req, res ) => {
-    res.status(HttpStatus.OK).send(`Use e.g. http://${c.url}:${c.port}/api/${config.version}/user`);
+    res.status(HttpStatus.OK).send(`Use e.g. http://${c.host}:${c.port}/api/${config.version}/user`);
   } );
 
   // Start the Server
   app.listen( port, () => {
-    console.log( `server running on ${c.url}:${c.port}`);
+    console.log( `server running on ${c.host}:${c.port}`);
     console.log( `press CTRL+C to stop server` );
   } );
 })();

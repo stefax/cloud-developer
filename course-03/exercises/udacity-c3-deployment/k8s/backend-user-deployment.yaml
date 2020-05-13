@@ -12,47 +12,47 @@ spec:
         service: backend-user
     spec:
       containers:
-      - image: scheele/udacity-restapi-user
-        name: backend-user 
-        imagePullPolicy: Always  
+      - image: modul1/udacity-restapi-user
+        name: backend-user
+        imagePullPolicy: Always
         resources:
           requests:
             memory: "64Mi"
             cpu: "250m"
           limits:
             memory: "1024Mi"
-            cpu: "500m"      
+            cpu: "500m"
         env:
-        - name: URL
+        - name: USER_MS_PORT
           valueFrom:
             configMapKeyRef:
               name: env-config
-              key: URL 
+              key: USER_MS_PORT
         - name: JWT_SECRET
           valueFrom:
             configMapKeyRef:
               name: env-config
               key: JWT_SECRET
-        - name: POSTGRESS_DB
+        - name: USER_MS_POSTGRESS_DB
           valueFrom:
             configMapKeyRef:
               name: env-config
-              key: POSTGRESS_DB
-        - name: POSTGRESS_HOST
+              key: USER_MS_POSTGRESS_DB
+        - name: USER_MS_POSTGRESS_HOST
           valueFrom:
             configMapKeyRef:
               name: env-config
-              key: POSTGRESS_HOST
-        - name: POSTGRESS_PASSWORD
+              key: USER_MS_POSTGRESS_HOST
+        - name: USER_MS_POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
               name: env-secret
-              key: POSTGRESS_PASSWORD
-        - name: POSTGRESS_USERNAME
+              key: USER_MS_POSTGRES_PASSWORD
+        - name: USER_MS_POSTGRES_USERNAME
           valueFrom:
             secretKeyRef:
               name: env-secret
-              key: POSTGRESS_USERNAME
+              key: USER_MS_POSTGRES_USERNAME
       restartPolicy: Always
 
 

@@ -17,7 +17,7 @@ export const config = {
     'secret': process.env.JWT_SECRET
   },
   'server': {
-    'url': process.env.URL,
+    'host': "localhost",
     'port': process.env.PORT,
     'default_port': 8080
   }

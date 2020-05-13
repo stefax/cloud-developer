@@ -8,6 +8,7 @@ services:
       depends_on:
         - backend-user
         - backend-feed
+
   backend-user:
     image: modul1/udacity-restapi-user
     environment:
@@ -16,8 +17,7 @@ services:
       POSTGRES_DATABASE: ${USER_MS_POSTGRES_DATABASE}
       POSTGRES_HOST: ${USER_MS_POSTGRES_HOST}
       JWT_SECRET: ${JWT_SECRET}
-      URL: ${USER_MS_URL}
-      PORT: ${USER_MS_PORT}
+      PORT: 8080
 
   backend-feed:
     image: modul1/udacity-restapi-feed
@@ -32,10 +32,9 @@ services:
       AWS_PROFILE: ${AWS_PROFILE}
       AWS_MEDIA_BUCKET: ${AWS_MEDIA_BUCKET}
       JWT_SECRET: ${JWT_SECRET}
-      URL: ${FEED_MS_URL}
-      PORT: ${FEED_MS_PORT}
+      PORT: 8080
 
   frontend:
-    image: modul1/udacity-frontend:local
+    image: modul1/udacity-frontend
     ports:
       - "8100:80"
