@@ -11,7 +11,7 @@ The only relevant folder for this project is the folder `course-03/exercises`.
 
 ## What to submit
 - [x] Screenshot of TravisCI which shows the successful build and deploy steps  
-    - see folder [project-submission-attachments](./project-submission-attachments)
+    - see [Successful-Build-*.png files in project-submission-attachments](./project-submission-attachments)
 - [x] The public GitHub repo and the docker hub images  
     - see [my GitHub repo](https://github.com/stefax/cloud-developer/tree/master/course-03/exercises)   
     - see my [User REST API microservice image on dockerhub](https://hub.docker.com/repository/docker/modul1/udacity-restapi-user)
@@ -19,24 +19,11 @@ The only relevant folder for this project is the folder `course-03/exercises`.
     - see my [Frontend image on dockerhub](https://hub.docker.com/repository/docker/modul1/udacity-frontend)
     - see my [Reverse-Proxy image on dockerhub](https://hub.docker.com/repository/docker/modul1/reverseproxy)
 - [x] Screenshot of kubectl get pod which shows all running containers
-- [ ] Screenshot of the application
+    - see [kubectl-get-pods-with-all-running-containers.png in the project-submission-attachments](./project-submission-attachments)
+- [x] Screenshot of the application
+    - see [Screenshot-of-the-Udagram-Application.png in project-submission-attachments](./project-submission-attachments)
 
-## Rubric requirements
-
-[See Project Rubric here](https://review.udacity.com/#!/rubrics/2572/view).
-
-- [x] CI/CD, Github & Code Quality
-  - [x] The project demonstrates an understanding of CI and Github: All project code is stored in a GitHub repository and a link to the repository has been provided for reviewers. The student uses a CI/CD tool to build the application.
-  - [x] The project has a proper documentation - The README file includes introduction how to setup and deploy the project. It explains the main building blocks and has comments in the important files.
-  - [ ] The project use continuous deployments (CD) - A CI/CD tool is in place to deploy a new version of the app automatically to production. The description should be easy to follow.
-- [x] Container
-  - [x] The app is containerized: There is a Dockerfile in repo and the docker image can be build
-  - [x] The project have public docker images: On DockerHub images for the application are available
-  - [x] The applications runs in a container without errors: Starting the app as a container on a local system
-- [x] Deployment
-  - [x] The application runs on a cluster in the cloud: The project can be deployed to a kubernetes cluster
-  - [x] The app can be upgraded via rolling-update: The students can deploy a new version of the application without downtime
-  - [ ] A/B deployment of the application: Two versions - 'A' and 'B' of the same application can run simultaneously and serve the traffic
+[See Project Rubric requirements here](https://review.udacity.com/#!/rubrics/2572/view).
 
 
 # 2 Setup

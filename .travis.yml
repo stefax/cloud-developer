@@ -1,6 +1,6 @@
 branches:
   only:
-    - nonexistingmaster # todo set back to master
+    - master
 
 language: minimal
 
@@ -19,8 +19,10 @@ before_install:
   - chmod +x ./kubectl
   - sudo mv ./kubectl /usr/local/bin/kubectl
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+# as the deployment to AWS with Travis is not required (https://knowledge.udacity.com/questions/106089) and i would not
+# want to have my actual secret yaml files committed to github, the following lines are commented out.
 #  - mkdir ${HOME}/.kube
-#  - cp udacity-c3-deployment/k8s/udagram-kubeconfig ${HOME}/.kube/config
+#  - cp course-03/exercises/udacity-c3-deployment/kubeone-terraform/udagram-kubeconfig ${HOME}/.kube/config
 #  - kubectl config set clusters.k8s.local.certificate-authority-data "$KUBE_CLUSTER_CERTIFICATE"
 #  - kubectl config set users.k8s.local.client-certificate-data "$KUBE_CLIENT_CERTIFICATE"
 #  - kubectl config set users.k8s.local.client-key-data "$KUBE_CLIENT_KEY"
@@ -28,14 +30,14 @@ before_install:
 install:
   - docker-compose -f course-03/exercises/udacity-c3-deployment/docker/docker-compose-build.yaml build --parallel
   - docker-compose -f course-03/exercises/udacity-c3-deployment/docker/docker-compose-build.yaml push
-#  - kubectl apply -f udacity-c3-deployment/k8s/backend-feed-service.yaml
-#  - kubectl apply -f udacity-c3-deployment/k8s/backend-user-service.yaml
-#  - kubectl apply -f udacity-c3-deployment/k8s/frontend-service.yaml
-#  - kubectl apply -f udacity-c3-deployment/k8s/reverseproxy-service.yaml
-#  - kubectl apply -f udacity-c3-deployment/k8s/aws-secret.yaml
-#  - kubectl apply -f udacity-c3-deployment/k8s/env-configmap.yaml
-#  - kubectl apply -f udacity-c3-deployment/k8s/env-secret.yaml
-#  - kubectl apply -f udacity-c3-deployment/k8s/backend-feed-deployment.yaml
-#  - kubectl apply -f udacity-c3-deployment/k8s/backend-user-deployment.yaml
-#  - kubectl apply -f udacity-c3-deployment/k8s/frontend-deployment.yaml
-#  - kubectl apply -f udacity-c3-deployment/k8s/reverseproxy-deployment.yaml
+#  - kubectl apply -f course-03/exercises/udacity-c3-deployment/k8s/config-maps-and-secrets/aws-secret.yaml
+#  - kubectl apply -f course-03/exercises/udacity-c3-deployment/k8s/config-maps-and-secrets/env-configmap.yaml
+#  - kubectl apply -f course-03/exercises/udacity-c3-deployment/k8s/config-maps-and-secrets/env-secret.yaml
+#  - kubectl apply -f course-03/exercises/udacity-c3-deployment/k8s/backend-feed-deployment.yaml
+#  - kubectl apply -f course-03/exercises/udacity-c3-deployment/k8s/backend-feed-service.yaml
+#  - kubectl apply -f course-03/exercises/udacity-c3-deployment/k8s/backend-user-deployment.yaml
+#  - kubectl apply -f course-03/exercises/udacity-c3-deployment/k8s/backend-user-service.yaml
+#  - kubectl apply -f course-03/exercises/udacity-c3-deployment/k8s/frontend-deployment.yaml
+#  - kubectl apply -f course-03/exercises/udacity-c3-deployment/k8s/frontend-service.yaml
+#  - kubectl apply -f course-03/exercises/udacity-c3-deployment/k8s/reverseproxy-deployment.yaml
+#  - kubectl apply -f course-03/exercises/udacity-c3-deployment/k8s/reverseproxy-service.yaml
