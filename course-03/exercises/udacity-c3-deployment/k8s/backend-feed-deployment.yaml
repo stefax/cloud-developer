@@ -1,20 +1,18 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: backend-feed
   labels:
     service: backend-feed
-    version: v0
-  name: backend-feed
 spec:
   replicas: 2
   selector:
     matchLabels:
-      env: prod
+      service: backend-feed
   template:
     metadata:
       labels:
         service: backend-feed
-        version: v0
     spec:
       containers:
       - image: modul1/udacity-restapi-feed
@@ -28,7 +26,7 @@ spec:
             memory: "1024Mi"
             cpu: "500m"
         env:
-        - name: FEED_MS_PORT
+        - name: PORT
           valueFrom:
             configMapKeyRef:
               name: env-config
@@ -53,22 +51,22 @@ spec:
             configMapKeyRef:
               name: env-config
               key: JWT_SECRET
-        - name: FEED_MS_POSTGRESS_DB
+        - name: POSTGRES_DATABASE
           valueFrom:
             configMapKeyRef:
               name: env-config
-              key: FEED_MS_POSTGRESS_DB
-        - name: FEED_MS_POSTGRESS_HOST
+              key: FEED_MS_POSTGRES_DATABASE
+        - name: POSTGRES_HOST
           valueFrom:
             configMapKeyRef:
               name: env-config
-              key: FEED_MS_POSTGRESS_HOST
-        - name: FEED_MS_POSTGRES_PASSWORD
+              key: FEED_MS_POSTGRES_HOST
+        - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
               name: env-secret
               key: FEED_MS_POSTGRES_PASSWORD
-        - name: FEED_MS_POSTGRES_USERNAME
+        - name: POSTGRES_USERNAME
           valueFrom:
             secretKeyRef:
               name: env-secret

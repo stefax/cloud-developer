@@ -18,24 +18,24 @@ The only relevant folder for this project is the folder `course-03/exercises`.
     - see my [Feed REST API microservice image on dockerhub](https://hub.docker.com/repository/docker/modul1/udacity-restapi-feed)
     - see my [Frontend image on dockerhub](https://hub.docker.com/repository/docker/modul1/udacity-frontend)
     - see my [Reverse-Proxy image on dockerhub](https://hub.docker.com/repository/docker/modul1/reverseproxy)
-- [ ] Screenshot of kubectl get pod which shows all running containers
+- [x] Screenshot of kubectl get pod which shows all running containers
 - [ ] Screenshot of the application
 
 ## Rubric requirements
 
 [See Project Rubric here](https://review.udacity.com/#!/rubrics/2572/view).
 
-- [ ] CI/CD, Github & Code Quality
-  - [ ] The project demonstrates an understanding of CI and Github: All project code is stored in a GitHub repository and a link to the repository has been provided for reviewers. The student uses a CI/CD tool to build the application.
-  - [ ] The project has a proper documentation - The README file includes introduction how to setup and deploy the project. It explains the main building blocks and has comments in the important files.
+- [x] CI/CD, Github & Code Quality
+  - [x] The project demonstrates an understanding of CI and Github: All project code is stored in a GitHub repository and a link to the repository has been provided for reviewers. The student uses a CI/CD tool to build the application.
+  - [x] The project has a proper documentation - The README file includes introduction how to setup and deploy the project. It explains the main building blocks and has comments in the important files.
   - [ ] The project use continuous deployments (CD) - A CI/CD tool is in place to deploy a new version of the app automatically to production. The description should be easy to follow.
-- [ ] Container
-  - [ ] The app is containerized: There is a Dockerfile in repo and the docker image can be build
-  - [ ] The project have public docker images: On DockerHub images for the application are available
-  - [ ] The applications runs in a container without errors: Starting the app as a container on a local system
-- [ ] Deployment
-  - [ ] The application runs on a cluster in the cloud: The project can be deployed to a kubernetes cluster
-  - [ ] The app can be upgraded via rolling-update: The students can deploy a new version of the application without downtime
+- [x] Container
+  - [x] The app is containerized: There is a Dockerfile in repo and the docker image can be build
+  - [x] The project have public docker images: On DockerHub images for the application are available
+  - [x] The applications runs in a container without errors: Starting the app as a container on a local system
+- [x] Deployment
+  - [x] The application runs on a cluster in the cloud: The project can be deployed to a kubernetes cluster
+  - [x] The app can be upgraded via rolling-update: The students can deploy a new version of the application without downtime
   - [ ] A/B deployment of the application: Two versions - 'A' and 'B' of the same application can run simultaneously and serve the traffic
 
 
@@ -156,22 +156,81 @@ other APIs behind it. There we could implement the authentication. This is a TOD
 - Create a .env file from the .env.example and set the environment variables 
 - Build the images: `docker-compose -f docker-compose-build.yaml build`
 - Run the container: `docker-compose up`
-- Call the [frontend app](http://localhost:8100/home)
+- Call the [frontend app](http://localhost:8100)
 
-### 2.6.2 Pushing the images to the Docker Regsitry
+### 2.6.2 Pushing the images to the Docker Regsitry manually
 
 - Run `docker login` to have your Docker Registry (e.g. Docker Hub) configured in case you haven't done it yet
 - Run `docker-compose -f docker-compose-build.yaml push`
+- This step is not required if Travis CI is configured to push images to the registry
 
 ### 2.6.3 CI using Travis CI
 
-- Travis CI is triggered to build the project (actually to build the 4 above mentioned images) if you are on master
-  (e.g. when a pull request is merged).
+- Travis CI is triggered to build the docker images if you are on master (e.g. when a pull request from a dev branch is merged into master).
+- It also pushes the images into the Docker Registry. For that Travis CI needs to log in which is done using two environment variables that need to be set in your Travis CI environment:
+    - DOCKER_USERNAME (not the email but the user name which is also part of your registry url)
+    - DOCKER_PASSWORD (**please note:** it is recommended to work with an access token here and **not** with your actual password; you can create these in your docker hub account security settings)
 - See `.travis.yml` in the root folder for configuration details
 
 ### 2.6.4 Deployment to Production with Kubernetes
 
-TODO
+#### 2.6.4.1 Prerequesites
+
+For detailed instructions, see [kubeone quickstart aws](https://github.com/kubermatic/kubeone/blob/master/docs/quickstart-aws.md).
+
+- **Software installed**
+  - **KubeOne** or an equivalent tool is installed
+    - a command-line utility for installing, managing, and upgrading Kubernetes clusters
+    - runs only on Linux and Mac OS
+    - instructions for installing KubeOne on Linux or macOS, [see here](https://github.com/kubermatic/kubeone)
+  - **Terraform** installed, if the infrastructure on AWS should be created through this tool
+    - an open-source infrastructure as code tool that enables users to define and provision a datacenter infrastructure on all relevant cloud infrastructure providers
+    - instructions for installing Terraform, [see here](https://www.terraform.io/downloads.html)
+  - **kubectl** or an equivalent tool is installed
+    - command line tool for controlling Kubernetes clusters
+    - instructions for installing kubectl, [see here](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
+- **Credentials are set up**
+  - IAM user with sufficient rights
+  - have an access key (with id and secret key) stored in ... 
+    - env vars `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`
+    - or in your default profile in ~/.aws/credentials and env var `AWS_PROFILE=...` is set up accordingly
+- **Infrastructure is created (with Terraform)**
+  - In the console go to the `kubeone-terraform` directory
+  - Run `terraform init`
+  - Adapt the `terraform.tfvars` file and set the variables that you want to have different from the defaults
+  - Run `terraform plan` to see what changes will be made
+  - Run `terraform apply` to proceed and provision the infrastructure
+- **Kubernetes is installed on the infrastructure (with KubeOne)**
+  - In the console go to the `kubeone-terraform` directory
+  - Run `kubeone install ./config.yaml --tfjson .`
+  - Use `kubectl --kubeconfig=<cluster_name>-kubeconfig` or for convenience do e.g. `export KUBECONFIG=$PWD/udagram-kubeconfig` in order to just use `kubectl`
+- Files `aws-secret.yaml`, `env-secret.yaml` and `env-configmap.yaml` are created and filled with actual data based on their <name>.example.yaml counterparts
+  - To encode secrets with base64, use `echo -n "<mystring>" | base64` - the `-n` **is important to avoid having line breaks** included in the string! 
+    
+#### 2.6.4.2 Deployment to Kubernetes
+
+- In the console go to the `kubeone-terraform` directory
+- Run `kubectl apply -f ../k8s/config-maps-and-secrets/aws-secret.yaml  -f ../k8s/config-maps-and-secrets/env-configmap.yaml  -f ../k8s/config-maps-and-secrets/env-secret.yaml` which creates the config maps and secrets in kubernetes
+- Run `kubectl apply -f ../k8s/backend-feed-deployment.yaml -f ../k8s/backend-feed-service.yaml` to deploy feed replica-set and service
+- Run `kubectl apply -f ../k8s/backend-user-deployment.yaml -f ../k8s/backend-user-service.yaml` to deploy user replica-set and service
+- Run `kubectl apply -f ../k8s/reverseproxy-deployment.yaml -f ../k8s/reverseproxy-service.yaml` to deploy reverseproxy replica-set and service
+- Run `kubectl apply -f ../k8s/frontend-deployment.yaml -f ../k8s/frontend-service.yaml` to deploy frontend replica-set and service
+
+**To check on your local machine forward the ports:**
+- Forward port 8100 for the frontend: `kubectl port-forward service/frontend 8100:8100`
+- Forward port 8080 for the backend: `kubectl port-forward service/reverseproxy 8080:8080`
+
+TOOD: xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+RollingUpdate: This is the default update strategy.
+With RollingUpdate update strategy, after you update a DaemonSet template, old DaemonSet pods will be killed, and new DaemonSet pods will be created automatically, in a controlled fashion. At most one pod of the DaemonSet will be running on each node during the whole update process.
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+#### 2.6.4.3 Remove & clean everything
+
+In order to avoid costs, do the following:
+- Run `kubeone reset config.yaml --tfjson .` inside the `kubeone-terraform` directory to reset all your kubernetes setup
+- Run `terraform destroy` to delete the infrastructure from AWS EC2
+
 
 # 3 Branches
 

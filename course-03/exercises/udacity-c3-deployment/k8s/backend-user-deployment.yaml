@@ -1,11 +1,14 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: backend-user
   labels:
     service: backend-user
-  name: backend-user
 spec:
   replicas: 2
+  selector:
+    matchLabels:
+      service: backend-user
   template:
     metadata:
       labels:
@@ -23,7 +26,7 @@ spec:
             memory: "1024Mi"
             cpu: "500m"
         env:
-        - name: USER_MS_PORT
+        - name: PORT
           valueFrom:
             configMapKeyRef:
               name: env-config
@@ -33,22 +36,22 @@ spec:
             configMapKeyRef:
               name: env-config
               key: JWT_SECRET
-        - name: USER_MS_POSTGRESS_DB
+        - name: POSTGRES_DATABASE
           valueFrom:
             configMapKeyRef:
               name: env-config
-              key: USER_MS_POSTGRESS_DB
-        - name: USER_MS_POSTGRESS_HOST
+              key: USER_MS_POSTGRES_DATABASE
+        - name: POSTGRES_HOST
           valueFrom:
             configMapKeyRef:
               name: env-config
-              key: USER_MS_POSTGRESS_HOST
-        - name: USER_MS_POSTGRES_PASSWORD
+              key: USER_MS_POSTGRES_HOST
+        - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
               name: env-secret
               key: USER_MS_POSTGRES_PASSWORD
-        - name: USER_MS_POSTGRES_USERNAME
+        - name: POSTGRES_USERNAME
           valueFrom:
             secretKeyRef:
               name: env-secret
